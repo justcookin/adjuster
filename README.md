@@ -1,6 +1,8 @@
 # Adjuster
 
-A RESTful spell checker and image re-sizing service.
+A RESTful spell checker and image re-sizing service. 
+
+Whether fixing bad spelling or making a thumnail, Adjuster adjusts.
 
 ## Examples
 
