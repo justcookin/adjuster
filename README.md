@@ -23,3 +23,13 @@ Example response:
   </Suggestions>
 </data>
 ```
+
+#### Image Resizer
+Example request:
+```
+http://www.example.com/adjust-image/200/300?url=http://www.link.to/web/image.jpg
+```
+Example response:
+```
+redirect to http://www.example.com/images/image200x300.jpg 
+```
