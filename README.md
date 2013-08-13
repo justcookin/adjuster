@@ -62,4 +62,9 @@ To make it easy to run the services using the vagrant box it defaults to startin
 
 To restart the services change directories to /vagrant - `cd /vagrant` and run `perl Adjuster/bin/app.pl`. 
 
+## Under the hood
+
+Adjuster/lib/Adjuster.pm is where most of the action takes place for both Image Resizer and Spellchecker.
+bootstrap.sh contains all the dependency info, which is basically updating with .deb packages since Adjuster was developed on Ubuntu Precise 12.04 vagrant box.
+
 
