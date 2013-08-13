@@ -13,39 +13,41 @@ set serializer => 'XML';
 #
 # adjust_image - takes height width and image url
 get '/adjust-image/:height/:width' => sub {
-  my $url = params->{url};
-  my $height = params->{height};
-  my $width = params->{width};
-  die "Height must be a numeric value\n" unless
-    $height =~ /^\d{1,4}$/;
-  die "Width must be a numeric value\n" unless
-    $width =~ /^\d{1,4}$/;
+    my $url = params->{url};
+    my $height = params->{height};
+    my $width = params->{width};
+    # validate that height and width are numeric 
+    # limit to 4 places long, change if needed
+    die "Height must be a numeric value\n" unless
+	$height =~ /^\d{1,4}$/;
+    die "Width must be a numeric value\n" unless
+	$width =~ /^\d{1,4}$/;
+    # resize image
     my $image = Image::Magick->new();
-    my $x = $image->Read($url)
-	or die "Error loading image\n";
-    $image->Resize(height => $height, width => $width)
-	or die "Error resizing image\n";
+    my $x = $image->Read($url);
+    $image->Resize(height => $height, width => $width);
+    # save image
     my $name = basename($url);
     $x = $image->Write("/vagrant/Adjuster/public/images/$name");
-    die "Error loading image\n" if "$x";
+    warn "Error loading image check image URL\n" if "$x";
     redirect "/images/" . $name;
 };
 
 get '/spellcheck/:word' => sub {
     my $word = params->{word};
-        my $speller = Text::Aspell->new;
+    my $speller = Text::Aspell->new;
     $speller->set_option('sug-mode','fast');
-  if ($speller->check( $word )) {
-    {  { SpellingCorrect => "true" ,
-	 Word => $word, }
-    };
-  } else {
-    my @suggestions = $speller->suggest( $word );
-    { SpellingCorrect => 'false',
-      Suggestions => { Suggestion => \@suggestions }
-    };
-  }
-
+    if ($speller->check( $word )) {
+	{  { SpellingCorrect => "true" ,
+	     Word => $word, }
+	};
+    } else {
+	my @suggestions = $speller->suggest( $word );
+	{ SpellingCorrect => 'false',
+	  Suggestions => { Suggestion => \@suggestions }
+	};
+    }
+    
 };
 
 dance;
