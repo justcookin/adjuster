@@ -6,25 +6,26 @@ use Text::Aspell;
 use File::Basename;
 #use LWP::Simple qw( getprint );
 use Image::Magick;
+
 set serializer => 'XML';
 #set serializer => 'Dumper'; #un-comment this for json format responses
 
-get '/' => sub{
-    return {message => "First rest Web Service with Perl and Dancer"};
-};
-
+#
+# adjust_image - takes height width and image url
 get '/adjust-image/:height/:width' => sub {
-    my $url = params->{url};
-    my $height = params->{height};
-    my $width = params->{width};
+  my $url = params->{url};
+  my $height = params->{height};
+  my $width = params->{width};
+  die "Height must be a numeric value" unless
+    $height =~ /^\d{1-4}$/;
+  die "Width must be a numeric value" unless
+    $width =~ /^\d{1-4}$/;
     my $image = Image::Magick->new();
     my $x = $image->Read($url);
     $image->Resize(height => $height, width => $width);
     my $name = basename($url);
     $x = $image->Write("/vagrant/Adjuster/public/images/$name");
-      warn "$x" if "$x";
-#    return $x->Display();
-   # print $image->Get('format');
+    warn "$x" if "$x";
     redirect "/images/" . $name;
 };
 
