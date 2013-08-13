@@ -16,16 +16,18 @@ get '/adjust-image/:height/:width' => sub {
   my $url = params->{url};
   my $height = params->{height};
   my $width = params->{width};
-  die "Height must be a numeric value" unless
-    $height =~ /^\d{1-4}$/;
-  die "Width must be a numeric value" unless
-    $width =~ /^\d{1-4}$/;
+  die "Height must be a numeric value\n" unless
+    $height =~ /^\d{1,4}$/;
+  die "Width must be a numeric value\n" unless
+    $width =~ /^\d{1,4}$/;
     my $image = Image::Magick->new();
-    my $x = $image->Read($url);
-    $image->Resize(height => $height, width => $width);
+    my $x = $image->Read($url)
+	or die "Error loading image\n";
+    $image->Resize(height => $height, width => $width)
+	or die "Error resizing image\n";
     my $name = basename($url);
     $x = $image->Write("/vagrant/Adjuster/public/images/$name");
-    warn "$x" if "$x";
+    die "Error loading image\n" if "$x";
     redirect "/images/" . $name;
 };
 
